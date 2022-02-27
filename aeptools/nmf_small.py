@@ -59,10 +59,8 @@ def ssnmf(spectrogramData2D, number_basis, number_iter):
     output = np.zeros((data.shape[0], data.shape[1], number_basis))
     np.seterr(invalid='ignore')     
     for run in range(number_basis):
-        output[:, :, run] = (
-            spectrogramData2D * np.outer(W[:, run], H[run, :]) / (W @ H)
-        ) 
-
+        output[:, :, run] = spectrogramData2D * np.outer(W[:, run], H[run, :]) / (W @ H)
+        
     np.seterr(invalid='warn')   
     output[np.isnan(output)] = 0
 
