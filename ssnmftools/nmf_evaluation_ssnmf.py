@@ -1,10 +1,11 @@
 def nmf_evaluation_ssnmf(spectrogramData, spectrogramSignal, spectrogramNoise, reference_sweeps, nsweeps):
 
     import matplotlib.pyplot as plt         
-    from aeptools import nmf_evaluation
+    from ssnmftools import nmf_evaluation
     import numpy as np                     
     
-    npermutation = 1                    # number of permutations
+    
+    npermutation = 1                    # number of permutations to perform [default = 1]
     
     plt.rcParams['toolbar'] = 'None'       
        
@@ -21,7 +22,7 @@ def nmf_evaluation_ssnmf(spectrogramData, spectrogramSignal, spectrogramNoise, r
     (ORI_RMSE, ORI_CORR, ORI_nsweeplabels_unique) = nmf_evaluation(spectrogramData, spectrogramData, nsweeplabels, reference_sweeps)
     (NMF_RMSE, NMF_CORR, NMF_nsweeplabels_unique) = nmf_evaluation(spectrogramSignal, spectrogramData, nsweeplabels, reference_sweeps)
     
-    absCCFlag = True                    # whether to take absolute values of correlation coefficients (CC), or not
+    absCCFlag = True                    
     if absCCFlag:
         ORI_CORR['results'] = abs(ORI_CORR['results'])
         NMF_CORR['results'] = abs(NMF_CORR['results'])

@@ -53,14 +53,14 @@ def nmf_evaluation(spectrogramSignal, spectrogramData, nsweeplabels, reference_s
     Diary
     -----
     2019-09-09 (v01) 
-        - Fuh-Cherng (Fuh) Jeng borrowed this script from Dr. Tzu-Hao (Harry) Lin, written in MATLAB
+        - Fuh-Cherng (Fuh) Jeng borrowed this script, originally written in Matlab, from Tzu-Hao (Harry) Lin
     2021-01-24 (v02)
          - Fuh rewrote this script in Python and made some minor adjustments
         
     '''
 
     import numpy as np
-    from aeptools import corr_columnwise
+    from ssnmftools import corr_columnwise
 
     # reshape each spectrogram to a 1D array (i.e., flatten each spectrogram)
     signal = spectrogramSignal.reshape(-1, spectrogramSignal.shape[2], order='F')  
@@ -75,13 +75,13 @@ def nmf_evaluation(spectrogramSignal, spectrogramData, nsweeplabels, reference_s
     ref_data = np.mean(ref_data, axis=1).reshape(ref_data.shape[0],1)                         
     data = np.tile(ref_data, spectrogramData.shape[2])      
 
-    # compute RMSE
+    # compute rmse
     rmse = np.sqrt(np.mean((signal-data)**2, axis=0))    
     
-    # compute CORR
+    # compute corr
     corr = corr_columnwise(signal, data)
 
-    # reshape rmse and correlation results into 2D matrices (npermutation x nsweepCondition)
+    # reshape rmse and corr into 2D matrices (npermutation x nsweepCondition)
     rmse = rmse.reshape((npermutation, nsweepCondition), order='F')
     corr = corr.reshape((npermutation, nsweepCondition), order='F')
     

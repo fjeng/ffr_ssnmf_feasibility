@@ -17,7 +17,7 @@ def ssnmf_core(V, rdim, iter_num, W0, H0):
         # Update using standard NMF multiplicative update rule
         H = H * (W.T @ V) / (W.T @ W @ H + 1e-9)
 
-        # Renormalize so rows of H have constant energy
+        # Re-normalize so that rows of H have constant energy
         norms = np.sqrt(np.sum(H.T ** 2, 0))
         H = H / np.outer(norms.T, np.ones((1, samples)))
         W = W * np.outer(np.ones((vdim, 1)), norms)
@@ -31,15 +31,16 @@ def ssnmf_core(V, rdim, iter_num, W0, H0):
 def ssnmf(spectrogramData2D, number_basis, number_iter): 
     '''
     2022-01-30 (v01)
-        - Fuh-Cherng (Fuh) Jeng converted part of the nmfsc() (that was originally written by Tzu-Hao Lin in Matlab) to Python
+        - Fuh-Cherng (Fuh) Jeng converted part of the nmfsc(), that was originally written by Tzu-Hao (Harry) Lin in Matlab, to Python
         - Fuh made a few minor changes
     2022-02-22 (v02)
-        - Fuh modified this script so that the input spectrogramData2D is already a 2D matrix. 
+        - Fuh modified this script so that the input spectrogramData2D must be a 2D matrix. Otherwise, this script will not work.
         - As such, no reshape() is needed within this function. 
-        - In other words, any reshape() should be performed prior to feeding spectrogramData2D into this function.
+        - In other words, any reshape() must be performed prior to feeding spectrogramData2D into this function.
     '''
   
-    data = 20 * np.log10(spectrogramData2D)   # convert nV to dB (adopted from Lin et al., 2017)
+    data = 20 * np.log10(spectrogramData2D)   # convert nV to dB (adopted from Lin et al., 2017). 
+    # IMPORTANT: This converion is just for the purpose of optimizing W and H. It has no effect on the amplitude unit of ssnmf() output. The unit of ssnmf() output will always be the same the unit of the input data. For this study, the unit of the input data is nV.
 
     data[data < 0] = 0                        
 

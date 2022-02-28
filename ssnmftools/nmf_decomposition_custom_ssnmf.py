@@ -4,10 +4,8 @@ def nmf_decomposition_custom_ssnmf(spectrogramData, nbasis, niter, nsweeps):
     
     Introduction
     ------------
-    - corr is the Pearson correlation coefficient between spectrogramSignal and spectrogramData
-    - RMSE (root-mean-square error) is the RMS value of the differences between spectrogramSignal and spectrogramData
-    - NOTE: When estimating Correlation and RMSE, computations are based on "straightened/flattened spectrogram data". That is, 2D spectrograms are reshaped into vectors, prior to computing differnces and correlations.
-
+    - This script performs a source separation NMF decomposition, designed for the "FFR SSNMF Feasibility" project
+    
     Parameters
     ----------
     spectrogramData : numpy array (3D)
@@ -29,7 +27,7 @@ def nmf_decomposition_custom_ssnmf(spectrogramData, nbasis, niter, nsweeps):
        - W is the spectral-basis matrix. It is a 2 dimenational matrix (e.g., 201000 x 2)
    H : numy array (2D)
        - H is the information-coding matrix. It is a 2 dimensional matrix (e.g., 2 x 11)
-   nsweeplabels : numy array (1D)
+   nsweeplabels : numpy array (1D)
         - nsweeplabels are the nSweeps labels that corresponds to all the spectrograms saved in spectrogramData (and should be the same to those in spectrogramSignal as well) 
    
     Diary
@@ -39,14 +37,14 @@ def nmf_decomposition_custom_ssnmf(spectrogramData, nbasis, niter, nsweeps):
     2021-08-08 (v02) 
         - Fuh made some minor changes
     2022-02-22 (v03)
-        - The user is required to reshape the input spectrogramData into a 2D matrix, prior to feeding it into the ssnmf() function. 
-        - The benefit it that, starting from this version, the original spectrogramData can be reshaped in any way. As long as the final spectrogramData2D is a 2D matrix, the ssnmf() will work as it should be.        
+        - The user is required to reshape the input spectrogramData into a 2D matrix, prior to using it as an input argrment into the ssnmf() function. 
+        - The benefit is that, starting from this version, the original spectrogramData can be reshaped in any way. As long as the spectrogramData2D is reshaped into a 2D matrix, the ssnmf() will work as it should be.        
     '''
     
     import sys
     import numpy as np
     import matplotlib.pyplot as plt
-    from aeptools import ssnmf
+    from ssnmftools import ssnmf
     from mpl_toolkits.axes_grid1 import make_axes_locatable
 
     if spectrogramData.size == 0:
@@ -71,11 +69,11 @@ def nmf_decomposition_custom_ssnmf(spectrogramData, nbasis, niter, nsweeps):
     outputSignal = np.reshape(output[:,:,0], (ny, -1), order='F')
     outputNoise = np.reshape(output[:,:,1], (ny, -1), order='F')
 
-    # reshape outputted signal and noise
+    # reshape signal and noise
     spectrogramSignal = np.reshape(outputSignal, (ny, nx, -1), order='F')
     spectrogramNoise = np.reshape(outputNoise, (ny, nx, -1), order='F')
 
-    npermutation = 1
+    npermutation = 1                    # number of permutations to perform [default = 1]
 
     # compute xticks and nsweeplabels
     xticks = np.full(len(nsweeps) * npermutation, np.nan)

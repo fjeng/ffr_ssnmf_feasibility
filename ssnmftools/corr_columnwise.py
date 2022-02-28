@@ -1,4 +1,4 @@
-def corr_columnwise(X1, X2):
+def corr_columnwise(X1, X2, normalizeFlag=True):
     '''
     Purpose : compute column-wise correlation coefficients
     
@@ -6,7 +6,7 @@ def corr_columnwise(X1, X2):
     ------------
     - Matlab's corr() computes the correlation of columns between X1 and X2.
     - Numpy's corrcoef() calculates the correlation of rows within an array.
-    - Both input arrays will be normalized before calculating correlation coefficients
+    - This script mimics the funcationality of Matlab's corr() by using a custom-written script in Python.
    
     Parameters
     ----------
@@ -14,6 +14,8 @@ def corr_columnwise(X1, X2):
         - input 1
     X2 : numpy array (2D)
         - input 2
+    normalizeFlag : boolean
+        - whether to normalize input vectors before computing correlation coefficients, or not [default = True]
         
     Returns
     -------
@@ -23,20 +25,21 @@ def corr_columnwise(X1, X2):
     Diary
     ---------------------------
     2022-02-13 (v01) 
-        - Fuh wrote this script in Python
+        - Fuh-Cherng (Fuh) Jeng wrote this script in Python
         
     ToDo
     ----
     # TODO: check input matrix/vector size
-    # TODO: if the input matrix/vector size is inappropriate, correct them. 
+    # TODO: if the input matrix/vector size is inappropriate, show an error message. 
                 
     '''
     import numpy as np
     
-    normalizeFlag = True    # whether to normalize input vectors manually before doing cross-correlation, or not
+    normalizeFlag = True   
     if normalizeFlag:
-        X1 = (X1 - X1.mean(axis=0)) / X1.std(axis=0)           # normalize X1, prior to corrcoef()
-        X2 = (X2 - X2.mean(axis=0)) / X2.std(axis=0)           # normalize X2, prior to corrcoef()
+        X1 = (X1 - X1.mean(axis=0)) / X1.std(axis=0)           
+        X2 = (X2 - X2.mean(axis=0)) / X2.std(axis=0)           
+        
     coefficients = (np.dot(X2.T, X1) / X2.shape[0])[0]
        
     return coefficients
