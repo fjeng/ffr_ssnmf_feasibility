@@ -27,20 +27,20 @@ def nmf_evaluation(spectrogramSignal, spectrogramData, nsweeplabels, reference_s
 
    Returns
    -------
-    RMSE : dictionary
-        - RMSE is the RMS (root-mean-square) error between spectrogramSignal and spectrogramData
+    CORR : dictionary
+        - CORR is the correlation coefficient between spectrogramSignal and spectrogramData
         'results' : numpy array (2D)
-            - rmse raw data. It has a shape of (npermutation, nsweepCondition).
+            - correlation coefficients. It has a shape of (npermutation, nsweepCondition).
         'mean' : numpy array (2D) 
             - mean value across npermutation. It has a shape of (1, nsweepCondition).
         'std' : numpy array (2D) 
             - standard deviation across npermutation. It has a shape of (1, nsweepCondition).
         'se' : numpy array (2D) 
             - standard error across npermutation. It has a shape of (1, nsweepCondition).
-    CORR : dictionary
-        - CORR is the correlation coefficient between spectrogramSignal and spectrogramData
+    RMSE : dictionary
+        - RMSE is the RMS (root-mean-square) error between spectrogramSignal and spectrogramData
         'results' : numpy array (2D)
-            - correlation coefficients. It has a shape of (npermutation, nsweepCondition).
+            - rmse raw data. It has a shape of (npermutation, nsweepCondition).
         'mean' : numpy array (2D) 
             - mean value across npermutation. It has a shape of (1, nsweepCondition).
         'std' : numpy array (2D) 
@@ -75,24 +75,17 @@ def nmf_evaluation(spectrogramSignal, spectrogramData, nsweeplabels, reference_s
     ref_data = np.mean(ref_data, axis=1).reshape(ref_data.shape[0],1)                         
     data = np.tile(ref_data, spectrogramData.shape[2])      
 
-    # compute rmse
-    rmse = np.sqrt(np.mean((signal-data)**2, axis=0))    
-    
     # compute corr
     corr = corr_columnwise(signal, data)
 
+    # compute rmse
+    rmse = np.sqrt(np.mean((signal-data)**2, axis=0))    
+    
     # reshape rmse and corr into 2D matrices (npermutation x nsweepCondition)
-    rmse = rmse.reshape((npermutation, nsweepCondition), order='F')
     corr = corr.reshape((npermutation, nsweepCondition), order='F')
+    rmse = rmse.reshape((npermutation, nsweepCondition), order='F')
     
     # save results in RMSE and CORR dictionaries
-    RMSE = {
-        'results': rmse,
-        'mean': np.mean(rmse, axis=0),   
-        'std': np.std(rmse, axis=0),     
-        'se': np.std(rmse, axis=0) / np.sqrt(npermutation)  
-        }
-
     CORR = {
         'results': corr,
         'mean': np.mean(corr, axis=0),    
@@ -100,6 +93,13 @@ def nmf_evaluation(spectrogramSignal, spectrogramData, nsweeplabels, reference_s
         'se': np.std(corr, axis=0) / np.sqrt(npermutation)  
         }
        
-    return (RMSE, CORR, nsweeplabels_unique)
+    RMSE = {
+        'results': rmse,
+        'mean': np.mean(rmse, axis=0),   
+        'std': np.std(rmse, axis=0),     
+        'se': np.std(rmse, axis=0) / np.sqrt(npermutation)  
+        }
+
+    return (CORR, RMSE, nsweeplabels_unique)
 
 
